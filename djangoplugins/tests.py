@@ -2,15 +2,15 @@ from __future__ import absolute_import
 
 from django import forms
 from django.test import TestCase
-from django.utils.translation import ugettext_lazy as _
 from django.utils import six
+from django.utils.translation import ugettext_lazy as _
 
 from .fields import PluginChoiceField, PluginModelChoiceField, \
     PluginModelMultipleChoiceField
-from .point import PluginMount, PluginPoint
-from .models import Plugin, PluginPoint as PluginPointModel
-from .models import ENABLED, DISABLED, REMOVED
 from .management.commands.syncplugins import SyncPlugins
+from .models import ENABLED, DISABLED, REMOVED
+from .models import Plugin, PluginPoint as PluginPointModel
+from .point import PluginMount, PluginPoint
 
 
 class MyPluginPoint(PluginPoint):
@@ -205,7 +205,7 @@ class PluginsFieldsTest(TestCase):
             'model_choice': '%d' % MyPlugin2.get_model().id,
             # 'plugin_multi_choice': ['my-plugin-2'],
             'model_multi_choice': ['%d' % MyPlugin2.get_model().id],
-            })
+        })
         self.assertTrue(form.is_valid())
 
         cld = form.cleaned_data

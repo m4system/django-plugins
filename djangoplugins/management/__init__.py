@@ -9,7 +9,6 @@ except ImportError:
     except ImportError:
         from south.signals import post_migrate
 
-
 from djangoplugins import models as plugins_app
 from .commands.syncplugins import SyncPlugins
 

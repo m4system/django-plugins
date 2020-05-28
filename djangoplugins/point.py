@@ -1,13 +1,11 @@
-from __future__ import absolute_import
+from __future__ import absolute_import, unicode_literals
 
 from django import VERSION as django_version
-from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ObjectDoesNotExist
-from django.utils import six
+from django.utils.translation import ugettext_lazy as _
 
 from .models import Plugin, PluginPoint as PluginPointModel, ENABLED
 from .utils import get_plugin_name, db_table_exists
-
 
 _PLUGIN_POINT = "<class 'djangoplugins.point.PluginPoint'>"
 
@@ -46,7 +44,7 @@ class PluginMount(type):
     DoesNotExist = ObjectDoesNotExist
 
 
-class PluginPoint(six.with_metaclass(PluginMount, object)):
+class PluginPoint(metaclass=PluginMount):
     @classmethod
     def get_pythonpath(cls):
         return get_plugin_name(cls)
@@ -109,7 +107,7 @@ class PluginPoint(six.with_metaclass(PluginMount, object)):
             raise Exception(_('This method is only available to plugin '
                               'classes.'))
         else:
-            return PluginPointModel.objects.\
+            return PluginPointModel.objects. \
                 get(plugin__pythonpath=cls.get_pythonpath())
 
     @classmethod
@@ -149,7 +147,7 @@ class PluginPoint(six.with_metaclass(PluginMount, object)):
         if is_plugin_point(cls):
             point_pythonpath = cls.get_pythonpath()
             return Plugin.objects.filter(point__pythonpath=point_pythonpath,
-                                         status=ENABLED).\
+                                         status=ENABLED). \
                 order_by('index')
         else:
             raise Exception(_('This method is only available to plugin point '

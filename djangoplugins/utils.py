@@ -1,10 +1,10 @@
 from __future__ import absolute_import
 
-from django.db import connection
+from importlib import import_module
+
 from django.conf import settings
 from django.conf.urls import include, url
-
-from importlib import import_module
+from django.db import connection
 
 
 def get_plugin_name(cls):
@@ -30,8 +30,8 @@ def include_plugins(point, pattern=r'{plugin}/', urls='urls'):
     for plugin in point.get_plugins():
         if hasattr(plugin, urls) and hasattr(plugin, 'name'):
             _urls = getattr(plugin, urls)
-            for _url in _urls:
-                _url.default_args['plugin'] = plugin.name
+            for myurl in _urls:
+                myurl.default_args['plugin'] = plugin.name
             pluginurls.append(url(
                 pattern.format(plugin=plugin.name),
                 include(_urls)
@@ -40,18 +40,21 @@ def include_plugins(point, pattern=r'{plugin}/', urls='urls'):
 
 
 def import_app(app_name):
+    # print(app_name)
     try:
         mod = import_module(app_name)
-    except ImportError:  # Maybe it's AppConfig
+    except ImportError as e:  # Maybe it's AppConfig
         parts = app_name.split('.')
         tmp_app, app_cfg_name = '.'.join(parts[:-1]), parts[-1]
         try:
+            # print(parts[:-2])
             tmp_app = import_module(tmp_app)
-        except ImportError:
+            import_module('%s.plugins' % parts[:-2][0])  # TODO: fix this
+        except ImportError as f:
+            # print(f)
             raise
         mod = getattr(tmp_app, app_cfg_name).name
         mod = import_module(mod)
-
     return mod
 
 

@@ -1,9 +1,9 @@
-from __future__ import absolute_import
+from __future__ import absolute_import, unicode_literals
 
 from dirtyfields import DirtyFieldsMixin
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from django.utils.encoding import python_2_unicode_compatible
+
 from djangoplugins.signals import django_plugin_enabled, django_plugin_disabled
 from .utils import get_plugin_name, get_plugin_from_string
 
@@ -12,9 +12,9 @@ DISABLED = 1
 REMOVED = 2
 
 STATUS_CHOICES = (
-    (ENABLED,  _('Enabled')),
+    (ENABLED, _('Enabled')),
     (DISABLED, _('Disabled')),
-    (REMOVED,  _('Removed')),
+    (REMOVED, _('Removed')),
 )
 
 STATUS_CHOICES_ENABLED = (ENABLED,)
@@ -26,7 +26,6 @@ class PluginPointManager(models.Manager):
         return self.get(pythonpath=get_plugin_name(point))
 
 
-@python_2_unicode_compatible
 class PluginPoint(models.Model):
     pythonpath = models.CharField(max_length=255)
     title = models.CharField(max_length=255)
@@ -50,7 +49,6 @@ class PluginManager(models.Manager):
         return self.get(pythonpath=name)
 
 
-@python_2_unicode_compatible
 class Plugin(DirtyFieldsMixin, models.Model):
     """
     Database representation of a plugin.
@@ -75,7 +73,7 @@ class Plugin(DirtyFieldsMixin, models.Model):
     status
         Plugin status.
     """
-    point = models.ForeignKey(PluginPoint)
+    point = models.ForeignKey(PluginPoint, on_delete=models.CASCADE)
     pythonpath = models.CharField(max_length=255, unique=True)
     name = models.CharField(max_length=255, null=True, blank=True)
     title = models.CharField(max_length=255, default='', blank=True)
