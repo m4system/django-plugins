@@ -124,7 +124,7 @@ class PluginPoint(metaclass=PluginMount):
         # another way but this appears to work fine.
         if django_version >= (1, 9) and \
                 not db_table_exists(Plugin._meta.db_table):
-            raise StopIteration
+            return iter([])
 
         if is_plugin_point(cls):
             for plugin_model in cls.get_plugins_qs():
